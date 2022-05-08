@@ -13,4 +13,10 @@ categoriesRotes.post('/', (request, response) => {
   return response.status(201).send();
 });
 
+categoriesRotes.get('/', (request, response) => {
+  const categories = categoriesRepository.list();
+
+  return response.status(201).json({ categories });
+})
+
 export { categoriesRotes };
