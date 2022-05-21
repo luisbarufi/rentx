@@ -27,7 +27,7 @@
                     "type": "string"
                   }
                 },
-                "exemple": {
+                "example": {
                   "name": "category name sample",
                   "description": "Category description sample"
                 }
@@ -91,7 +91,7 @@
                     "type": "string"
                   }
                 },
-                "exemple": {
+                "example": {
                   "name": "Specification name sample",
                   "description": "Specification description sample"
                 }
