@@ -1,11 +1,12 @@
 import { ICategoriesRepository } from "../../repositories/ICategoriesRepository";
+
 interface IRequest {
   name: string;
   description: string;
 }
 
 export class CreateCategoryUseCase {
-  constructor( private categoriesRepository: ICategoriesRepository ) {}
+  constructor(private categoriesRepository: ICategoriesRepository) {}
 
   execute({ name, description }: IRequest): void {
     const categoryAlreadyExists = this.categoriesRepository.findByName(name);
@@ -14,6 +15,6 @@ export class CreateCategoryUseCase {
       throw new Error(`Category ${name} already exists`);
     }
 
-    this.categoriesRepository.create({ name, description});
+    this.categoriesRepository.create({ name, description });
   }
 }

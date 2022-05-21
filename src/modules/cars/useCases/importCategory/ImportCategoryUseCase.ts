@@ -1,6 +1,7 @@
-import { parse } from 'csv-parse';
-import fs from 'fs';
-import { CategoriesRepository } from '../../repositories/implementations/CategoriesRepository';
+import { parse } from "csv-parse";
+import fs from "fs";
+
+import { CategoriesRepository } from "../../repositories/implementations/CategoriesRepository";
 
 interface IImportCategory {
   name: string;
@@ -8,7 +9,7 @@ interface IImportCategory {
 }
 
 export class ImportCategoryUseCase {
-  constructor( private categoriesRepository: CategoriesRepository ) {}
+  constructor(private categoriesRepository: CategoriesRepository) {}
 
   loadCategoies(file: Express.Multer.File): Promise<IImportCategory[]> {
     return new Promise((resolve, reject) => {
@@ -18,35 +19,36 @@ export class ImportCategoryUseCase {
 
       stream.pipe(parseFile);
 
-      parseFile.on('data', async (line) => {
-        const [name, description] = line;
-        categories.push({
-          name,
-          description
+      parseFile
+        .on("data", async (line) => {
+          const [name, description] = line;
+          categories.push({
+            name,
+            description,
+          });
+        })
+        .on("end", () => {
+          fs.promises.unlink(file.path);
+          resolve(categories);
+        })
+        .on("error", (error) => {
+          reject(error);
         });
-      })
-      .on('end', () => {
-        fs.promises.unlink(file.path);
-        resolve(categories);
-      })
-      .on('error', (error) => {
-        reject(error)
-      });
     });
   }
 
   async execute(file: Express.Multer.File): Promise<void> {
     const categories = await this.loadCategoies(file);
 
-    categories.map( async (category) => {
+    categories.map(async (category) => {
       const { name, description } = category;
 
-      const existCategory = this.categoriesRepository.findByName(name)
+      const existCategory = this.categoriesRepository.findByName(name);
 
       if (!existCategory) {
         this.categoriesRepository.create({
           name,
-          description
+          description,
         });
       }
     });
