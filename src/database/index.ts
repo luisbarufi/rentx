@@ -1,5 +1,8 @@
+import "reflect-metadata";
 import "dotenv/config";
 import { DataSource } from "typeorm";
+
+import { Category } from "../modules/cars/entities/Category";
 
 export const dataSource = new DataSource({
   migrationsTableName: "migrations",
@@ -9,6 +12,7 @@ export const dataSource = new DataSource({
   username: "docker",
   password: "ignite",
   database: "rentx",
+  entities: [Category],
   migrations: ["./src/database/migrations/*.ts"],
 });
 
