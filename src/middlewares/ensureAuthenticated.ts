@@ -34,6 +34,11 @@ export async function ensureAuthenticated(
       throw new AppError("User does not exists!", 401);
     }
 
+    // override express typing to add user, see src/@types/express/index.d.ts
+    request.user = {
+      id: user_id,
+    };
+
     next();
   } catch {
     throw new AppError("Invalid token!", 401);
