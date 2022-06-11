@@ -8,17 +8,13 @@ export class SpecificationsRepositoryInMemory
   specifications: Specification[] = [];
 
   async findByName(name: string): Promise<Specification> {
-    const specification = this.specifications.find(
+    return this.specifications.find(
       (specification) => specification.name === name
     );
-
-    return specification;
   }
 
   async list(): Promise<Specification[]> {
-    const all = this.specifications;
-
-    return all;
+    return this.specifications;
   }
 
   async create({ name, description }: ICreateEspeficationDTO): Promise<void> {
