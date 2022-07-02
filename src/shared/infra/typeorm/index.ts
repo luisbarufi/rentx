@@ -14,9 +14,10 @@ export const dataSource = new DataSource({
   type: "postgres",
   port: 5444,
   host: process.env.HOST,
-  username: "docker",
-  password: "ignite",
-  database: "rentx",
+  username: process.env.USERNAME,
+  password: process.env.PASSWORD,
+  database:
+    process.env.NODE_ENV === "test" ? process.env.DB_TEST : process.env.DB_DEV,
   entities: [Category, Specification, User, Car, CarImage, Rental],
   migrations: ["./src/shared/infra/typeorm/migrations/*.ts"],
 });
