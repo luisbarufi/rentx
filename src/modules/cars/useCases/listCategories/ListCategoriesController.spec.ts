@@ -8,7 +8,7 @@ import { dataSource } from "../../../../shared/infra/typeorm";
 
 let connection: DataSource;
 
-describe("Create Category Controller", () => {
+describe("List Categories Controller", () => {
   beforeAll(async () => {
     connection = await dataSource.initialize();
     const queryRunner = connection.createQueryRunner();
@@ -21,7 +21,7 @@ describe("Create Category Controller", () => {
 
     await connection.query(
       `INSERT INTO USERS(id, name, email, password, "isAdmin", created_at, driver_license)
-       values('${id}', 'admin', 'admin@rentx.com', '${password}', true, 'now()', 'xxxxxxx') 
+       values('${id}', 'admin', 'admin@rentx.com', '${password}', true, 'now()', 'xxxxxxx')
       `
     );
   });
@@ -31,15 +31,13 @@ describe("Create Category Controller", () => {
     await connection.destroy();
   });
 
-  it("should be able to create a new category", async () => {
+  it("should be able to list all categories", async () => {
     const responseToken = await request(app).post("/sessions").send({
       email: "admin@rentx.com",
       password: "admin",
     });
-
     const { token } = responseToken.body;
-
-    const response = await request(app)
+    await request(app)
       .post("/categories")
       .send({
         name: "Category Supertest",
@@ -48,28 +46,11 @@ describe("Create Category Controller", () => {
       .set({
         Authorization: `Bearer ${token}`,
       });
+    const response = await request(app).get("/categories");
 
-    expect(response.status).toBe(201);
-  });
-
-  it("should not be able to create a new category with a name that already exists", async () => {
-    const responseToken = await request(app).post("/sessions").send({
-      email: "admin@rentx.com",
-      password: "admin",
-    });
-
-    const { token } = responseToken.body;
-
-    const response = await request(app)
-      .post("/categories")
-      .send({
-        name: "Category Supertest",
-        description: "Category Supertest Description",
-      })
-      .set({
-        Authorization: `Bearer ${token}`,
-      });
-
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(1);
+    expect(response.body[0]).toHaveProperty("id");
+    expect(response.body[0].name).toEqual("Category Supertest");
   });
 });
